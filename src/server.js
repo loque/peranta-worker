@@ -1,6 +1,7 @@
 'use strict'
 
 const Server = require('peranta/server')
+const Router = require('peranta/router')
 
 function getContext()
 {
@@ -63,7 +64,7 @@ Transport.prototype.send = function send(channel, res)
 
 function create()
 {
-    return new Server(new Transport(getContext()))
+    return new Server(new Transport(getContext()), new Router())
 }
 
 module.exports = { create }
