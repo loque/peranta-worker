@@ -1,7 +1,7 @@
 {
   "name": "peranta-worker",
   "version": "0.1.2",
-  "description": "",
+  "description": "A Peranta adapter for Web Workers",
   "main": "index.js",
   "scripts": {
     "test": "npm-run-all test-client test-server",
