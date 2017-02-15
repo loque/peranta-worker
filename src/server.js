@@ -39,12 +39,9 @@ function Transport(ctx)
             event.sender = { send: this.send.bind(this) }
             this.receivers[channel].callback(event, req)
         }
-        else
+        else if (process.env.NODE_ENV !== 'production')
         {
-            if (process.env.NODE_ENV !== 'production')
-            {
-                console.info(`channel "${channel}" has no receiver attached`)
-            }
+            console.info(`channel "${channel}" has no receiver attached`)
         }
     }
 

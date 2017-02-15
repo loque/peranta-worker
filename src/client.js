@@ -13,7 +13,6 @@ function objIsWorker(obj)
 function Transport(worker)
 {
     if (objIsWorker(worker) === false) throw new TypeError('Transport.constructor() expects to receive a worker')
-    // if (worker instanceof Worker === false) throw new TypeError('Transport.constructor() expects to receive a worker')
 
     this.receivers = {}
     this.raw = worker
