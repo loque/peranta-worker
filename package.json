@@ -1,14 +1,17 @@
 {
   "name": "peranta-worker",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A Peranta adapter for Web Workers",
-  "main": "index.js",
   "scripts": {
-    "test": "npm-run-all test-client test-server",
     "test-client": "./node_modules/.bin/mocha ./test/client.js",
     "test-server": "./node_modules/.bin/mocha ./test/server.js",
-    "dev": "webpack --progress --colors --watch",
-    "build": "PROD_ENV=1 webpack --progress --colors"
+    "test": "npm run test-client && npm run test-server",
+    "build-commonjs-client": "cross-env BABEL_ENV=commonjs babel src/client.js -o client.js",
+    "build-commonjs-server": "cross-env BABEL_ENV=commonjs babel src/server.js -o server.js",
+    "build-commonjs": "npm run build-commonjs-client && npm run build-commonjs-server",
+    "build-umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack --progress --colors",
+    "build-umd-prod": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack --progress --colors",
+    "build": "npm run build-umd && npm run build-commonjs && npm run build-umd-prod"
   },
   "repository": {
     "type": "git",
@@ -28,13 +31,14 @@
     "peranta": "^0.1.5"
   },
   "devDependencies": {
+    "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
     "chai": "^3.5.0",
+    "cross-env": "^3.1.4",
     "mocha": "^3.2.0",
-    "npm-run-all": "^4.0.1",
     "webpack": "^2.2.1"
   }
 }

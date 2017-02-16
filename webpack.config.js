@@ -1,5 +1,7 @@
 const webpack = require('webpack')
-const PROD = JSON.parse(process.env.PROD_ENV || '0')
+const PROD = process.env.NODE_ENV === 'production'
+
+const outputFilename = PROD ? '[name].min.js' : '[name].js'
 
 module.exports = {
      entry: {
@@ -7,8 +9,8 @@ module.exports = {
          client: './src/client.js',
      },
      output: {
-         path: './',
-         filename: '[name].js',
+         path: './dist',
+         filename: outputFilename,
          libraryTarget: 'umd',
      },
      module: {
@@ -23,14 +25,14 @@ module.exports = {
          'peranta/router': 'peranta/router',
          'peranta/client': 'peranta/client',
      },
-     plugins: PROD ? [
+     plugins: !PROD ? [] : [
          new webpack.optimize.UglifyJsPlugin({
              compress: {
                  warnings: false,
              },
-             output: {
-                 comments: false,
-             },
+            //  output: {
+            //      comments: false,
+            //  },
          }),
-     ] : [],
+     ],
  }

@@ -1,1 +1,59 @@
-!function(e,r){if("object"==typeof exports&&"object"==typeof module)module.exports=r(require("peranta/router"),require("peranta/server"));else if("function"==typeof define&&define.amd)define(["peranta/router","peranta/server"],r);else{var t="object"==typeof exports?r(require("peranta/router"),require("peranta/server")):r(e["peranta/router"],e["peranta/server"]);for(var n in t)("object"==typeof exports?exports:e)[n]=t[n]}}(this,function(e,r){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={i:n,l:!1,exports:{}};return e[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}var t={};return r.m=e,r.c=t,r.i=function(e){return e},r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{configurable:!1,enumerable:!0,get:n})},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},r.p="",r(r.s=5)}([function(e,r){function t(){throw new Error("setTimeout has not been defined")}function n(){throw new Error("clearTimeout has not been defined")}function o(e){if(f===setTimeout)return setTimeout(e,0);if((f===t||!f)&&setTimeout)return f=setTimeout,setTimeout(e,0);try{return f(e,0)}catch(r){try{return f.call(null,e,0)}catch(r){return f.call(this,e,0)}}}function i(e){if(l===clearTimeout)return clearTimeout(e);if((l===n||!l)&&clearTimeout)return l=clearTimeout,clearTimeout(e);try{return l(e)}catch(r){try{return l.call(null,e)}catch(r){return l.call(this,e)}}}function u(){d&&h&&(d=!1,h.length?y=h.concat(y):m=-1,y.length&&c())}function c(){if(!d){var e=o(u);d=!0;for(var r=y.length;r;){for(h=y,y=[];++m<r;)h&&h[m].run();m=-1,r=y.length}h=null,d=!1,i(e)}}function a(e,r){this.fun=e,this.array=r}function s(){}var f,l,p=e.exports={};!function(){try{f="function"==typeof setTimeout?setTimeout:t}catch(e){f=t}try{l="function"==typeof clearTimeout?clearTimeout:n}catch(e){l=n}}();var h,y=[],d=!1,m=-1;p.nextTick=function(e){var r=new Array(arguments.length-1);if(arguments.length>1)for(var t=1;t<arguments.length;t++)r[t-1]=arguments[t];y.push(new a(e,r)),1!==y.length||d||o(c)},a.prototype.run=function(){this.fun.apply(null,this.array)},p.title="browser",p.browser=!0,p.env={},p.argv=[],p.version="",p.versions={},p.on=s,p.addListener=s,p.once=s,p.off=s,p.removeListener=s,p.removeAllListeners=s,p.emit=s,p.binding=function(e){throw new Error("process.binding is not supported")},p.cwd=function(){return"/"},p.chdir=function(e){throw new Error("process.chdir is not supported")},p.umask=function(){return 0}},,function(r,t){r.exports=e},function(e,t){e.exports=r},,function(e,r,t){"use strict";(function(r){function n(){return void 0!==("undefined"==typeof WorkerGlobalScope?"undefined":u(WorkerGlobalScope))&&self instanceof WorkerGlobalScope?self:window}function o(e){var t=this;return this.receivers={},this.raw=e,this.raw.onmessage=function(e){var n=e.data;if(!Array.isArray(n))return void("production"!==r.env.NODE_ENV&&console.info("message from client is not array",n));var o=n.shift(),i=n[0];t.receivers.hasOwnProperty(o)?(e.sender={send:t.send.bind(t)},t.receivers[o].callback(e,i)):"production"!==r.env.NODE_ENV&&console.info('channel "'+o+'" has no receiver attached')},this}function i(){return new c(new o(n()),new a)}var u="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},c=t(3),a=t(2);o.prototype.on=function(e,r){this.receivers[e]={channel:e,callback:r}},o.prototype.send=function(e,r){var t=JSON.parse(JSON.stringify(r));this.raw.postMessage([e,t])},e.exports={create:i}}).call(r,t(0))}])});
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var Server = require('peranta/server');
+var Router = require('peranta/router');
+
+function getContext() {
+    if ((typeof WorkerGlobalScope === 'undefined' ? 'undefined' : _typeof(WorkerGlobalScope)) !== undefined && self instanceof WorkerGlobalScope) {
+        return self;
+    }
+
+    return window;
+}
+
+function Transport(ctx) {
+    var _this = this;
+
+    this.receivers = {};
+    this.raw = ctx;
+
+    this.raw.onmessage = function (event) {
+        var message = event.data;
+
+        if (!Array.isArray(message)) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.info('message from client is not array', message);
+            }
+            return;
+        }
+
+        var channel = message.shift();
+        var req = message[0];
+
+        if (_this.receivers.hasOwnProperty(channel)) {
+            event.sender = { send: _this.send.bind(_this) };
+            _this.receivers[channel].callback(event, req);
+        } else if (process.env.NODE_ENV !== 'production') {
+            console.info('channel "' + channel + '" has no receiver attached');
+        }
+    };
+
+    return this;
+}
+
+Transport.prototype.on = function on(channel, callback) {
+    this.receivers[channel] = { channel: channel, callback: callback };
+};
+
+Transport.prototype.send = function send(channel, res) {
+    var resCopy = JSON.parse(JSON.stringify(res));
+    this.raw.postMessage([channel, resCopy]);
+};
+
+function create() {
+    return new Server(new Transport(getContext()), new Router());
+}
+
+module.exports = { create: create };
