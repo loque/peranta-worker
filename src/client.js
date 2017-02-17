@@ -1,6 +1,6 @@
 'use strict'
 
-const Client = require('peranta/client')
+import Client from 'peranta/client'
 
 function objIsWorker(obj)
 {
@@ -59,4 +59,4 @@ function create(worker)
     return new Client(new Transport(worker))
 }
 
-module.exports = { create }
+export default { create }

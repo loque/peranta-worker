@@ -1,17 +1,16 @@
 {
   "name": "peranta-worker",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "A Peranta adapter for Web Workers",
   "scripts": {
-    "test-client": "./node_modules/.bin/mocha ./test/client.js",
-    "test-server": "./node_modules/.bin/mocha ./test/server.js",
-    "test": "npm run test-client && npm run test-server",
-    "build-commonjs-client": "cross-env BABEL_ENV=commonjs babel src/client.js -o client.js",
-    "build-commonjs-server": "cross-env BABEL_ENV=commonjs babel src/server.js -o server.js",
-    "build-commonjs": "npm run build-commonjs-client && npm run build-commonjs-server",
-    "build-umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack --progress --colors",
-    "build-umd-prod": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack --progress --colors",
-    "build": "npm run build-umd && npm run build-commonjs && npm run build-umd-prod"
+    "test": "NODE_ENV=production ./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "clean_dist": "shx rm -rf ./dist && mkdirp ./dist",
+    "copy-pkg": "mkdirp ./dist && node ./scripts/copy_pkg.js",
+    "build-cjs": "cross-env BABEL_ENV=commonjs babel src --out-dir dist",
+    "build-umd-dev": "NODE_ENV=development webpack --progress --colors",
+    "build-umd-prod": "NODE_ENV=production webpack --progress --colors",
+    "build": "npm run clean_dist && npm run build-cjs && npm run build-umd-dev && npm run build-umd-prod",
+    "publish": "npm run build && npm run copy-pkg && npm publish ./dist"
   },
   "repository": {
     "type": "git",
@@ -19,7 +18,9 @@
   },
   "keywords": [
     "peranta",
-    "web-worker"
+    "web-worker",
+    "webworker",
+    "ipc"
   ],
   "author": "Lucas Soler",
   "license": "MIT",
@@ -28,7 +29,7 @@
   },
   "homepage": "https://github.com/loque/peranta-worker#readme",
   "dependencies": {
-    "peranta": "^0.1.5"
+    "peranta": "^0.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
@@ -38,7 +39,9 @@
     "babel-preset-stage-2": "^6.22.0",
     "chai": "^3.5.0",
     "cross-env": "^3.1.4",
+    "mkdirp": "^0.5.1",
     "mocha": "^3.2.0",
+    "shx": "^0.2.2",
     "webpack": "^2.2.1"
   }
 }

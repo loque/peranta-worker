@@ -1,7 +1,8 @@
 'use strict'
 
-const expect = require('chai').expect
-const Server = require('../src/server')
+import { expect } from 'chai'
+
+import Server from '../src/server'
 
 describe('Server', function()
 {

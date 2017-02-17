@@ -9,7 +9,7 @@ module.exports = {
          client: './src/client.js',
      },
      output: {
-         path: './dist',
+         path: './dist/dist',
          filename: outputFilename,
          libraryTarget: 'umd',
      },
