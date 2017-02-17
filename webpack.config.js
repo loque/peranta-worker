@@ -27,12 +27,8 @@ module.exports = {
      },
      plugins: !PROD ? [] : [
          new webpack.optimize.UglifyJsPlugin({
-             compress: {
-                 warnings: false,
-             },
-            //  output: {
-            //      comments: false,
-            //  },
+             compress: { warnings: false },
+             output: { comments: false },
          }),
      ],
  }

@@ -1,6 +1,6 @@
 {
   "name": "peranta-worker",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A Peranta adapter for Web Workers",
   "scripts": {
     "test": "NODE_ENV=production ./node_modules/.bin/mocha --compilers js:babel-core/register",
@@ -9,8 +9,8 @@
     "build-cjs": "cross-env BABEL_ENV=commonjs babel src --out-dir dist",
     "build-umd-dev": "NODE_ENV=development webpack --progress --colors",
     "build-umd-prod": "NODE_ENV=production webpack --progress --colors",
-    "build": "npm run clean_dist && npm run build-cjs && npm run build-umd-dev && npm run build-umd-prod",
-    "publish": "npm run build && npm run copy-pkg && npm publish ./dist"
+    "build": "run-s clean_dist build-cjs build-umd-dev build-umd-prod",
+    "pub": "run-s build copy-pkg && npm publish ./dist"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/loque/peranta-worker#readme",
   "dependencies": {
-    "peranta": "^0.2.1"
+    "peranta": "^0.2.5"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
