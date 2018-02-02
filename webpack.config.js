@@ -11,6 +11,7 @@ module.exports = {
      output: {
          path: './dist/dist',
          filename: outputFilename,
+		 library: 'PerantaWorker',
          libraryTarget: 'umd',
      },
      module: {

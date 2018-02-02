@@ -1,0 +1,17 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node express.js",
+    "watch": "node webpack.js"
+  },
+  "author": "Lucas Soler",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.2",
+    "peranta-worker": "^0.2.3",
+    "webpack": "^2.3.3"
+  }
+}
